@@ -206,3 +206,28 @@ The script was developed step-by-step:
 
 This iterative approach helped in understanding not just *what works*, but *why it works*.
 
+## Mini Projects
+
+### Transaction Analyzer
+
+This script processes a list of transaction values and performs:
+
+- Validation of numeric inputs (handles errors and NaN values)
+- Classification of valid vs invalid entries
+- Filtering of positive transactions
+- Calculation of:
+  - Total transaction value
+  - Average transaction value
+- Categorization of average value (High / Medium / Low)
+- Tracking of integer vs float inputs
+
+### Example Handling
+- "error" → invalid input
+- "NaN" → not a valid number
+- negative values → excluded from valid transactions
+
+This project demonstrates:
+- Exception handling (try-except)
+- Data validation
+- Conditional logic
+- Basic data analysis patterns
