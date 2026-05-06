@@ -7,6 +7,10 @@ This project demonstrates practical Python skills by building a **data validatio
 The script reads input data from a file, validates and processes mixed numeric data (integers, floats, and edge cases), and generates meaningful output metrics such as total, count, average, and status classification.
 
 ---
+## Mini Projects
+
+### Sensor Data Validation Engine
+→ See: mini_projects/sensor_data_validation/README.md
 
 ## 🎯 Problem Statement
 
