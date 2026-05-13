@@ -1,4 +1,4 @@
-x = 5
-y = 7
-print("The sum of", x, "and", y, "is", x + y)
+import sys
 
+# sys.argv is a list of everything you typed in the terminal
+print(f"Arguments passed: {sys.argv}")

@@ -1,0 +1,7 @@
+      {
+    "min_value": 0,
+    "max_value": 10,
+    "max_invalid": 2,
+    "critical_threshold": 60,
+    "average_threshold": 30
+}
