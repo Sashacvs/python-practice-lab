@@ -1,11 +1,14 @@
+import os
 import math
 import json
 import sys
 
 def read_readings_from_file(file_path):
     try:
-        with open(file_path, "r") as file:
-            return [line.strip() for line in file]
+        with open(file_path, "r", encoding="utf-16", errors="ignore") as file:
+            data = [line.strip() for line in file if line.strip()]
+        print(f"Debug: raw data from {file_path}: {repr(data)}")
+        return data
     except FileNotFoundError:
             print(f"Error: File '{file_path}' not found.")
             return []
@@ -97,16 +100,35 @@ def write_report(file_path, content):
         file.write(content)
 def main():
 
+    total_files = 0
+    passed_files = 0
+    failed_files = 0
+
     file_list = ["data/sensor_readings.txt", "data/numbers.txt", "data/practice.txt"]
     config_file = "settings.json"
 # 2. DYNAMIC CLI LOGIC (The Upgrade)
+    if len(sys.argv) > 1:
+        target = sys.argv[1] # user types a folder or a file
+    else:
+        target = "data/"    # Our default warehouse
+    
+    #The fork in the road: Is it a file or a folder?
+    if os.path.isdir(target):
+         print(f"Automated Scan: Looking inside folder '{target}'...")
+         file_list = []
+
+         #Look at every single item inside the folder
+         for item in os.listdir(target):
+              if item.endswith(".txt"): # Only care about .txt files such is the industry standard
+                   full_path = os.path.join(target, item)
+                   file_list.append(full_path)
+    else: 
+         file_list = [target] # Just one file to process
+
+# Handle the JSON config (always the last argument if provided)
+    config_file = "settings.json"
     if len(sys.argv) > 2:
-        # User typed: python script.py file1.txt file2.txt my_config.json
-        config_file = sys.argv[-1]   # Grabs the last item for config
-        file_list = sys.argv[1:-1]   # Grabs everything in between for data
-    elif len(sys.argv) == 2:
-        # User typed: python script.py file1.txt
-        file_list = [sys.argv[1]]
+        config_file = sys.argv[-1]
 
     try:
         with open(config_file, "r") as file:
@@ -131,6 +153,10 @@ def main():
         readings = read_readings_from_file(file_path)
 
         result = process_readings(readings,config)
+        total_files += 1
+        if result["status"] == "PASS":
+            passed_files += 1
+
         average, level = analyze_readings(result["total"], result["valid_count"], config)
 
         report = "" # Start of the report for the current file
@@ -166,7 +192,19 @@ def main():
     # 🔥 AFTER LOOP
    
     write_report("output/report.txt", full_report)
-
+    print("\n" + "="*40)
+    print("       FINAL EXECUTION SUMMARY")
+    print("="*40)
+    if total_files > 0:
+        fail_files = total_files - passed_files
+        pass_rate = (passed_files/total_files) * 100
+        print(f"Total files processed: {total_files}")
+        print(f"Passed files: {passed_files}")
+        print(f"Failed files: {fail_files}")
+        print(f"Pass Rate:  {pass_rate:.1f}%")
+        
+    else: 
+        print("No files processed. Pass Rate: N/A")
 #     print("-" * 40)
 #     print(f"Total: {result['total']}")
 #     print(f"Valid count: {result['valid_count']}")
